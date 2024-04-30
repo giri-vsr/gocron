@@ -1392,6 +1392,59 @@ func TestScheduler_RemoveJob(t *testing.T) {
 	}
 }
 
+func TestScheduler_JobsWaitingInQueue(t *testing.T) {
+	goleak.VerifyNone(t)
+	tests := []struct {
+		name            string
+		limit           uint
+		mode            LimitMode
+		startAt         func() OneTimeJobStartAtOption
+		expectedInQueue int
+	}{
+		{
+			"with mode wait limit 1",
+			1,
+			LimitModeWait,
+			func() OneTimeJobStartAtOption {
+				return OneTimeJobStartDateTime(time.Now().Add(10 * time.Millisecond))
+			},
+			4,
+		},
+		{
+			"with mode wait limit 10",
+			10,
+			LimitModeWait,
+			func() OneTimeJobStartAtOption {
+				return OneTimeJobStartDateTime(time.Now().Add(10 * time.Millisecond))
+			},
+			0,
+		},
+		{
+			"with mode Reschedule",
+			1,
+			LimitModeReschedule,
+			func() OneTimeJobStartAtOption {
+				return OneTimeJobStartDateTime(time.Now().Add(10 * time.Millisecond))
+			},
+			0,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			s := newTestScheduler(t, WithLimitConcurrentJobs(tt.limit, tt.mode))
+			for i := 0; i <= 4; i++ {
+				_, err := s.NewJob(OneTimeJob(tt.startAt()), NewTask(func() { time.Sleep(500 * time.Millisecond) }))
+				require.NoError(t, err)
+			}
+			s.Start()
+			time.Sleep(20 * time.Millisecond)
+			assert.Equal(t, tt.expectedInQueue, s.JobsWaitingInQueue())
+			require.NoError(t, s.Shutdown())
+		})
+	}
+}
+
 func TestScheduler_RemoveLotsOfJobs(t *testing.T) {
 	goleak.VerifyNone(t)
 	tests := []struct {
