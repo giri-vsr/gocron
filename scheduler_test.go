@@ -308,7 +308,7 @@ func TestScheduler_StopTimeout(t *testing.T) {
 }
 
 func TestScheduler_Shutdown(t *testing.T) {
-	goleak.VerifyNone(t)
+	defer goleak.VerifyNone(t)
 
 	t.Run("start, stop, start, shutdown", func(t *testing.T) {
 		s := newTestScheduler(t,
@@ -365,7 +365,7 @@ func TestScheduler_Shutdown(t *testing.T) {
 }
 
 func TestScheduler_NewJob(t *testing.T) {
-	goleak.VerifyNone(t)
+	defer goleak.VerifyNone(t)
 	tests := []struct {
 		name string
 		jd   JobDefinition
@@ -462,7 +462,7 @@ func TestScheduler_NewJob(t *testing.T) {
 }
 
 func TestScheduler_NewJobErrors(t *testing.T) {
-	goleak.VerifyNone(t)
+	defer goleak.VerifyNone(t)
 	tests := []struct {
 		name string
 		jd   JobDefinition
@@ -762,7 +762,7 @@ func TestScheduler_NewJobErrors(t *testing.T) {
 }
 
 func TestScheduler_NewJobTask(t *testing.T) {
-	goleak.VerifyNone(t)
+	defer goleak.VerifyNone(t)
 
 	testFuncPtr := func() {}
 	testFuncWithParams := func(one, two string) {}
@@ -867,7 +867,7 @@ func TestScheduler_NewJobTask(t *testing.T) {
 }
 
 func TestScheduler_WithOptionsErrors(t *testing.T) {
-	goleak.VerifyNone(t)
+	defer goleak.VerifyNone(t)
 	tests := []struct {
 		name string
 		opt  SchedulerOption
@@ -929,7 +929,7 @@ func TestScheduler_WithOptionsErrors(t *testing.T) {
 }
 
 func TestScheduler_Singleton(t *testing.T) {
-	goleak.VerifyNone(t)
+	defer goleak.VerifyNone(t)
 	tests := []struct {
 		name        string
 		duration    time.Duration
@@ -992,7 +992,7 @@ func TestScheduler_Singleton(t *testing.T) {
 }
 
 func TestScheduler_LimitMode(t *testing.T) {
-	goleak.VerifyNone(t)
+	defer goleak.VerifyNone(t)
 	tests := []struct {
 		name        string
 		numJobs     int
@@ -1064,7 +1064,7 @@ func TestScheduler_LimitMode(t *testing.T) {
 }
 
 func TestScheduler_LimitModeAndSingleton(t *testing.T) {
-	goleak.VerifyNone(t)
+	defer goleak.VerifyNone(t)
 	tests := []struct {
 		name          string
 		numJobs       int
@@ -1205,7 +1205,7 @@ func TestScheduler_WithDistributed(t *testing.T) {
 	notLocked := make(chan struct{}, 10)
 	notLeader := make(chan struct{}, 10)
 
-	goleak.VerifyNone(t)
+	defer goleak.VerifyNone(t)
 	tests := []struct {
 		name          string
 		count         int
@@ -1354,7 +1354,7 @@ func TestScheduler_WithDistributed(t *testing.T) {
 }
 
 func TestScheduler_RemoveJob(t *testing.T) {
-	goleak.VerifyNone(t)
+	defer goleak.VerifyNone(t)
 	tests := []struct {
 		name   string
 		addJob bool
@@ -1393,7 +1393,7 @@ func TestScheduler_RemoveJob(t *testing.T) {
 }
 
 func TestScheduler_JobsWaitingInQueue(t *testing.T) {
-	goleak.VerifyNone(t)
+	defer goleak.VerifyNone(t)
 	tests := []struct {
 		name            string
 		limit           uint
@@ -1446,7 +1446,7 @@ func TestScheduler_JobsWaitingInQueue(t *testing.T) {
 }
 
 func TestScheduler_RemoveLotsOfJobs(t *testing.T) {
-	goleak.VerifyNone(t)
+	defer goleak.VerifyNone(t)
 	tests := []struct {
 		name    string
 		numJobs int
@@ -1488,7 +1488,7 @@ func TestScheduler_RemoveLotsOfJobs(t *testing.T) {
 }
 
 func TestScheduler_RemoveJob_RemoveSelf(t *testing.T) {
-	goleak.VerifyNone(t)
+	defer goleak.VerifyNone(t)
 	s := newTestScheduler(t)
 	s.Start()
 
@@ -1511,7 +1511,7 @@ func TestScheduler_RemoveJob_RemoveSelf(t *testing.T) {
 }
 
 func TestScheduler_WithEventListeners(t *testing.T) {
-	goleak.VerifyNone(t)
+	defer goleak.VerifyNone(t)
 
 	listenerRunCh := make(chan error, 1)
 	testErr := fmt.Errorf("test error")
@@ -1786,7 +1786,7 @@ func TestScheduler_RunJobNow(t *testing.T) {
 }
 
 func TestScheduler_LastRunSingleton(t *testing.T) {
-	goleak.VerifyNone(t)
+	defer goleak.VerifyNone(t)
 
 	tests := []struct {
 		name string
@@ -1899,7 +1899,7 @@ func TestScheduler_OneTimeJob(t *testing.T) {
 }
 
 func TestScheduler_WithLimitedRuns(t *testing.T) {
-	goleak.VerifyNone(t)
+	defer goleak.VerifyNone(t)
 
 	tests := []struct {
 		name          string
@@ -2037,7 +2037,7 @@ func (t *testMonitor) RecordJobTiming(startTime, endTime time.Time, _ uuid.UUID,
 }
 
 func TestScheduler_WithMonitor(t *testing.T) {
-	goleak.VerifyNone(t)
+	defer goleak.VerifyNone(t)
 	tests := []struct {
 		name    string
 		jd      JobDefinition
